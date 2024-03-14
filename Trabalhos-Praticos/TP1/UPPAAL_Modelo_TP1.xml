@@ -68,30 +68,38 @@ clock xMinor, xMajor;</declaration>
 		<transition id="id11">
 			<source ref="id6"/>
 			<target ref="id7"/>
-			<label kind="synchronisation" x="-2006" y="-901">sensorMinor?</label>
+			<label kind="synchronisation" x="-2006" y="-901">sensorMajor?</label>
 			<label kind="assignment" x="-2006" y="-884">xMajor := 0</label>
 		</transition>
 	</template>
 	<template>
 		<name>Sensor</name>
-		<location id="id12" x="-841" y="-289">
-			<name x="-867" y="-323">notUsed</name>
+		<location id="id12" x="-943" y="-280">
+			<name x="-969" y="-314">notUsed</name>
 		</location>
-		<location id="id13" x="-595" y="-289">
-			<name x="-612" y="-323">used</name>
+		<location id="id13" x="-510" y="-280">
+			<name x="-527" y="-314">used</name>
+		</location>
+		<location id="id14" x="-731" y="-280">
 		</location>
 		<init ref="id12"/>
-		<transition id="id14">
+		<transition id="id15">
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-680" y="-280">sensorMinor!</label>
+		</transition>
+		<transition id="id16">
 			<source ref="id13"/>
 			<target ref="id12"/>
-			<label kind="synchronisation" x="-757" y="-103">endMinor?</label>
-			<nail x="-587" y="-111"/>
-			<nail x="-842" y="-111"/>
+			<label kind="synchronisation" x="-756" y="-93">endMinor?</label>
+			<nail x="-510" y="-110"/>
+			<nail x="-944" y="-111"/>
 		</transition>
-		<transition id="id15">
+		<transition id="id17">
 			<source ref="id12"/>
-			<target ref="id13"/>
-			<label kind="synchronisation" x="-774" y="-315">sensorMinor!</label>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-875" y="-272">sensorMajor!</label>
+			<nail x="-824" y="-280"/>
 		</transition>
 	</template>
 	<system>/*
