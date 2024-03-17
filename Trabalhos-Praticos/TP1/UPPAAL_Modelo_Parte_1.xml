@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+chan sensorMinor, sensorMajor, endMinor, endSensor;
+clock xMinor, xMajor;</declaration>
+	<template>
+		<name x="5" y="5">LigthsMinorRoad</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-952" y="-493">
+			<name x="-962" y="-527">interim</name>
+		</location>
+		<location id="id1" x="-1283" y="-306">
+			<name x="-1300" y="-297">red</name>
+		</location>
+		<location id="id2" x="-1283" y="-493">
+			<name x="-1293" y="-527">green</name>
+		</location>
+		<location id="id3" x="-952" y="-306">
+		</location>
+		<location id="id4" x="-1113" y="-306">
+		</location>
+		<init ref="id1"/>
+		<transition id="id5">
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-1232" y="-348">xMinor &gt;= 6</label>
+			<label kind="synchronisation" x="-1232" y="-331">endMinor!</label>
+		</transition>
+		<transition id="id6">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-1385" y="-416">sensorMinor?</label>
+			<label kind="assignment" x="-1377" y="-399">xMinor := 0</label>
+			<nail x="-1283" y="-323"/>
+		</transition>
+		<transition id="id7">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-1079" y="-331">endSensor!</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="-943" y="-408">xMinor := 0</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-1181" y="-518">xMinor &gt;= 31</label>
+		</transition>
+	</template>
+	<template>
+		<name>LigthsMajorRoad</name>
+		<declaration>clock y;</declaration>
+		<location id="id10" x="-2176" y="-841">
+			<name x="-2186" y="-875">green</name>
+		</location>
+		<location id="id11" x="-1742" y="-842">
+			<name x="-1768" y="-875">interim</name>
+		</location>
+		<location id="id12" x="-1963" y="-671">
+			<name x="-1973" y="-705">red</name>
+		</location>
+		<location id="id13" x="-1742" y="-671">
+		</location>
+		<init ref="id10"/>
+		<transition id="id14">
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-1887" y="-671">xMajor &gt;= 6</label>
+			<label kind="synchronisation" x="-1887" y="-654">sensorMinor!</label>
+			<nail x="-1759" y="-671"/>
+		</transition>
+		<transition id="id15">
+			<source ref="id12"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-2125" y="-671">endMinor?</label>
+			<label kind="assignment" x="-2133" y="-654">xMajor := 0</label>
+			<nail x="-2176" y="-671"/>
+		</transition>
+		<transition id="id16">
+			<source ref="id11"/>
+			<target ref="id13"/>
+			<label kind="assignment" x="-1734" y="-765">xMajor := 0</label>
+		</transition>
+		<transition id="id17">
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-2006" y="-867">xMajor &gt;= 30</label>
+			<label kind="synchronisation" x="-2006" y="-884">sensorMajor?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Sensor</name>
+		<location id="id18" x="-943" y="-280">
+			<name x="-969" y="-314">notUsed</name>
+		</location>
+		<location id="id19" x="-510" y="-280">
+			<name x="-527" y="-314">used</name>
+		</location>
+		<init ref="id18"/>
+		<transition id="id20">
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-765" y="-110">endSensor?</label>
+			<nail x="-510" y="-110"/>
+			<nail x="-944" y="-111"/>
+		</transition>
+		<transition id="id21">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-782" y="-280">sensorMajor!</label>
+			<nail x="-824" y="-280"/>
+		</transition>
+	</template>
+	<system>system LigthsMinorRoad, LigthsMajorRoad, Sensor;
+</system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; LigthsMinorRoad.green</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-03-17 18:07:42 +0000">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; LigthsMajorRoad.red</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-03-17 18:07:39 +0000">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-03-17 17:13:08 +0000">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(LigthsMajorRoad.green and LigthsMinorRoad.green)
+
+</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-03-17 17:19:00 +0000">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; (LigthsMajorRoad.red imply LigthsMajorRoad.green) or (LigthsMinorRoad.red imply LigthsMinorRoad.green)</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-03-17 17:34:09 +0000">
+			</result>
+		</query>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
