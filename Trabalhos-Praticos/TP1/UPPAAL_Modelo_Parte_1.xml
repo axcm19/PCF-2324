@@ -120,19 +120,19 @@ clock xMinor, xMajor;</declaration>
 	<queries>
 		<query>
 			<formula>E&lt;&gt; LigthsMinorRoad.green</formula>
-			<comment/>
+			<comment>(1) the minor-road light can go green.</comment>
 			<result outcome="success" type="quality" timestamp="2024-03-17 18:07:42 +0000">
 			</result>
 		</query>
 		<query>
 			<formula>E&lt;&gt; LigthsMajorRoad.red</formula>
-			<comment/>
+			<comment>(2) the major-road light can go red.</comment>
 			<result outcome="success" type="quality" timestamp="2024-03-17 18:07:39 +0000">
 			</result>
 		</query>
 		<query>
 			<formula>A[] not deadlock</formula>
-			<comment/>
+			<comment>(3) the system never enters in a deadlock state.</comment>
 			<result outcome="success" type="quality" timestamp="2024-03-17 17:13:08 +0000">
 			</result>
 		</query>
@@ -140,15 +140,13 @@ clock xMinor, xMajor;</declaration>
 			<formula>A[] !(LigthsMajorRoad.green and LigthsMinorRoad.green)
 
 </formula>
-			<comment/>
+			<comment>(4) the minor-road and major-road lights cannot be green at the same time.</comment>
 			<result outcome="success" type="quality" timestamp="2024-03-17 17:19:00 +0000">
 			</result>
 		</query>
 		<query>
-			<formula>A&lt;&gt; (LigthsMajorRoad.red imply LigthsMajorRoad.green) or (LigthsMinorRoad.red imply LigthsMinorRoad.green)</formula>
-			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-03-17 17:34:09 +0000">
-			</result>
+			<formula>LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
+			<comment>(5) if there are cars waiting they will eventually have green light.</comment>
 		</query>
 		<query>
 			<formula/>
