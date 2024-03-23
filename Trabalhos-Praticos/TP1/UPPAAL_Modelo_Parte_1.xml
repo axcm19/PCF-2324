@@ -10,6 +10,7 @@ clock xMinor, xMajor;</declaration>
 		<declaration>// Place local declarations here.</declaration>
 		<location id="id0" x="-952" y="-493">
 			<name x="-962" y="-527">interim</name>
+			<urgent/>
 		</location>
 		<location id="id1" x="-1283" y="-306">
 			<name x="-1300" y="-297">red</name>
@@ -145,8 +146,12 @@ clock xMinor, xMajor;</declaration>
 			</result>
 		</query>
 		<query>
-			<formula>LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
+			<formula>Sensor.used and LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
 			<comment>(5) if there are cars waiting they will eventually have green light.</comment>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="failure" type="quality" timestamp="2024-03-21 16:07:45 +0000">
+				<option key="--diagnostic" value="0"/>
+			</result>
 		</query>
 		<query>
 			<formula/>
