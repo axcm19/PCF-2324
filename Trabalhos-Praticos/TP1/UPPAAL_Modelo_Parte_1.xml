@@ -40,7 +40,7 @@ clock xMinor, xMajor, minorDelay, majorDelay;</declaration>
 		<transition id="id9">
 			<source ref="id4"/>
 			<target ref="id0"/>
-			<label kind="guard" x="-960" y="-518">minorDelay &gt;= 1</label>
+			<label kind="guard" x="-926" y="-518">minorDelay &gt;= 1</label>
 		</transition>
 		<transition id="id10">
 			<source ref="id6"/>
