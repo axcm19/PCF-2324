@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+chan MinorToMajor, MajorToMinor;
+clock xMinor, xMajor, minorDelay, majorDelay;
+int transitoMinor; 
+int transitoMajor;
+int MinorIsGreen;
+int MajorIsGreen := 1;</declaration>
+	<template>
+		<name x="5" y="5">LigthsMinorRoad</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-722" y="-493">
+			<name x="-732" y="-527">interim</name>
+		</location>
+		<location id="id1" x="-1147" y="-374">
+			<name x="-1156" y="-408">red</name>
+		</location>
+		<location id="id2" x="-1445" y="-637">
+			<name x="-1462" y="-688">green</name>
+		</location>
+		<location id="id3" x="-722" y="-374">
+		</location>
+		<location id="id4" x="-1037" y="-493">
+		</location>
+		<location id="id5" x="-918" y="-374">
+		</location>
+		<location id="id6" x="-1445" y="-374">
+		</location>
+		<location id="id7" x="-1445" y="-501">
+		</location>
+		<init ref="id1"/>
+		<transition id="id8">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="assignment" x="-1547" y="-442">xMinor := 0</label>
+			<nail x="-1445" y="-434"/>
+			<nail x="-1445" y="-476"/>
+		</transition>
+		<transition id="id9">
+			<source ref="id1"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-1402" y="-357">transitoMinor &gt; transitoMajor</label>
+			<label kind="assignment" x="-1343" y="-374">minorDelay := 0</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-1071" y="-357">minorDelay &gt;= 1</label>
+			<label kind="synchronisation" x="-1071" y="-340">MinorToMajor!</label>
+			<label kind="assignment" x="-1088" y="-374">MinorIsGreen := 0</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-935" y="-518">minorDelay &gt;= 1</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id7"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-1572" y="-586">minorDelay &gt;= 1</label>
+			<label kind="synchronisation" x="-1564" y="-569">MajorToMinor?</label>
+			<label kind="assignment" x="-1589" y="-552">MinorIsGreen := 1</label>
+			<nail x="-1445" y="-544"/>
+			<nail x="-1445" y="-569"/>
+			<nail x="-1445" y="-603"/>
+			<nail x="-1445" y="-612"/>
+			<nail x="-1445" y="-611"/>
+		</transition>
+		<transition id="id13">
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-850" y="-357">xMinor &gt;= 5</label>
+			<label kind="assignment" x="-875" y="-374">minorDelay := 0</label>
+		</transition>
+		<transition id="id14">
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="-714" y="-433">xMinor := 0</label>
+		</transition>
+		<transition id="id15">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-1368" y="-662">transitoMinor &lt;= transitoMajor</label>
+			<label kind="assignment" x="-1309" y="-637">minorDelay := 0</label>
+			<nail x="-1037" y="-637"/>
+		</transition>
+	</template>
+	<template>
+		<name>LigthsMajorRoad</name>
+		<declaration>clock y;</declaration>
+		<location id="id16" x="-2193" y="-841">
+			<name x="-2244" y="-867">green</name>
+		</location>
+		<location id="id17" x="-1666" y="-841">
+			<name x="-1692" y="-874">interim</name>
+		</location>
+		<location id="id18" x="-1895" y="-671">
+			<name x="-1905" y="-705">red</name>
+		</location>
+		<location id="id19" x="-1513" y="-671">
+		</location>
+		<location id="id20" x="-1513" y="-841">
+		</location>
+		<location id="id21" x="-1887" y="-841">
+		</location>
+		<location id="id22" x="-2193" y="-671">
+		</location>
+		<init ref="id16"/>
+		<transition id="id23">
+			<source ref="id18"/>
+			<target ref="id22"/>
+			<label kind="guard" x="-2167" y="-663">transitoMajor &gt;= transitoMinor</label>
+			<label kind="synchronisation" x="-2091" y="-646">MinorToMajor?</label>
+			<label kind="assignment" x="-2091" y="-629">majorDelay := 0</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id21"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-1844" y="-867">majorDelay &gt;= 1</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id20"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-1505" y="-773">xMajor &gt;= 5</label>
+			<label kind="assignment" x="-1505" y="-756">majorDelay := 0</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id17"/>
+			<target ref="id20"/>
+			<label kind="assignment" x="-1632" y="-841">xMajor := 0</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="guard" x="-1802" y="-671">majorDelay &gt;= 1</label>
+			<label kind="synchronisation" x="-1793" y="-654">MajorToMinor!</label>
+			<label kind="assignment" x="-1793" y="-637">MajorIsGreen:=0</label>
+			<nail x="-1708" y="-671"/>
+		</transition>
+		<transition id="id28">
+			<source ref="id22"/>
+			<target ref="id16"/>
+			<label kind="guard" x="-2329" y="-765">majorDelay &gt;= 1</label>
+			<label kind="assignment" x="-2338" y="-748">MajorIsGreen :=1</label>
+			<nail x="-2193" y="-739"/>
+		</transition>
+		<transition id="id29">
+			<source ref="id16"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-2142" y="-884">transitoMinor &gt; transitoMajor</label>
+			<label kind="assignment" x="-2091" y="-867">majorDelay := 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>SensorMinor</name>
+		<location id="id30" x="-841" y="-280">
+			<name x="-960" y="-289">nonExistent</name>
+		</location>
+		<location id="id31" x="-510" y="-280">
+			<name x="-544" y="-306">low</name>
+		</location>
+		<location id="id32" x="-510" y="-408">
+			<name x="-527" y="-451">high</name>
+		</location>
+		<init ref="id30"/>
+		<transition id="id33">
+			<source ref="id32"/>
+			<target ref="id31"/>
+			<label kind="guard" x="-416" y="-365">MinorIsGreen == 1</label>
+			<label kind="assignment" x="-416" y="-348">transitoMinor := 1</label>
+			<nail x="-424" y="-408"/>
+			<nail x="-424" y="-280"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id31"/>
+			<target ref="id32"/>
+			<label kind="assignment" x="-663" y="-365">transitoMinor := 2</label>
+			<nail x="-510" y="-374"/>
+		</transition>
+		<transition id="id35">
+			<source ref="id31"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-748" y="-178">MinorIsGreen == 1</label>
+			<label kind="assignment" x="-748" y="-195">transitoMinor := 0</label>
+			<nail x="-510" y="-195"/>
+			<nail x="-842" y="-196"/>
+		</transition>
+		<transition id="id36">
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="assignment" x="-739" y="-280">transitoMinor := 1</label>
+			<nail x="-824" y="-280"/>
+		</transition>
+	</template>
+	<template>
+		<name>SensorMajor</name>
+		<location id="id37" x="-110" y="-170">
+			<name x="-127" y="-213">high</name>
+		</location>
+		<location id="id38" x="-110" y="-51">
+			<name x="-144" y="-77">low</name>
+		</location>
+		<location id="id39" x="-450" y="-51">
+			<name x="-569" y="-60">nonExistent</name>
+		</location>
+		<init ref="id39"/>
+		<transition id="id40">
+			<source ref="id37"/>
+			<target ref="id38"/>
+			<label kind="guard" x="-18" y="-136">MajorIsGreen==1</label>
+			<label kind="assignment" x="-27" y="-119">transitoMajor := 1</label>
+			<nail x="-35" y="-170"/>
+			<nail x="-34" y="-51"/>
+		</transition>
+		<transition id="id41">
+			<source ref="id38"/>
+			<target ref="id37"/>
+			<label kind="assignment" x="-263" y="-127">transitoMajor := 2</label>
+			<nail x="-110" y="-102"/>
+		</transition>
+		<transition id="id42">
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="guard" x="-340" y="51">MajorIsGreen==1</label>
+			<label kind="assignment" x="-348" y="34">transitoMajor := 0</label>
+			<nail x="-110" y="34"/>
+			<nail x="-451" y="33"/>
+		</transition>
+		<transition id="id43">
+			<source ref="id39"/>
+			<target ref="id38"/>
+			<label kind="assignment" x="-348" y="-51">transitoMajor := 1</label>
+			<nail x="-424" y="-51"/>
+		</transition>
+	</template>
+	<system>system LigthsMinorRoad, LigthsMajorRoad, SensorMinor, SensorMajor;
+</system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; LigthsMinorRoad.green</formula>
+			<comment>(1) the minor-road light can go green.</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:08 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; LigthsMajorRoad.red</formula>
+			<comment>(2) the major-road light can go red.</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:10 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>(3) the system never enters in a deadlock state.</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:11 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(LigthsMajorRoad.green and LigthsMinorRoad.green)
+
+</formula>
+			<comment>(4) the minor-road and major-road lights cannot be green at the same time.</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:12 +0100">
+			</result>
+		</query>
+		<query>
+			<formula>(SensorMajor.low or SensorMajor.high) and LigthsMajorRoad.red --&gt; LigthsMajorRoad.green   </formula>
+			<comment>(5) if there are cars waiting they will eventually have green light.</comment>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="failure" type="quality" timestamp="2024-04-06 18:46:14 +0100">
+				<option key="--diagnostic" value="0"/>
+			</result>
+		</query>
+		<query>
+			<formula>(SensorMinor.low or SensorMinor.high) and LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
+			<comment/>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="failure" type="quality" timestamp="2024-04-06 18:46:16 +0100">
+				<option key="--diagnostic" value="0"/>
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; LigthsMajorRoad.red and LigthsMinorRoad.green</formula>
+			<comment>é possível o semáforo da Major Road estar vermelho ao mesmo tempo que o semáforo da Minor Road está verde;</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:17 +0100">
+			</result>
+		</query>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
