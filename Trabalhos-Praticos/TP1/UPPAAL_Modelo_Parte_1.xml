@@ -163,19 +163,19 @@ clock xMinor, xMajor, minorDelay, majorDelay;</declaration>
 		<query>
 			<formula>E&lt;&gt; LigthsMinorRoad.green</formula>
 			<comment>(1) the minor-road light can go green.</comment>
-			<result outcome="success" type="quality" timestamp="2024-03-26 16:13:05 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:49 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>E&lt;&gt; LigthsMajorRoad.red</formula>
 			<comment>(2) the major-road light can go red.</comment>
-			<result outcome="success" type="quality" timestamp="2024-03-26 16:13:08 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:50 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment>(3) the system never enters in a deadlock state.</comment>
-			<result outcome="success" type="quality" timestamp="2024-03-26 16:13:10 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:51 +0100">
 			</result>
 		</query>
 		<query>
@@ -183,28 +183,28 @@ clock xMinor, xMajor, minorDelay, majorDelay;</declaration>
 
 </formula>
 			<comment>(4) the minor-road and major-road lights cannot be green at the same time.</comment>
-			<result outcome="success" type="quality" timestamp="2024-03-26 16:13:12 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:51 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>Sensor.used and LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
 			<comment>(5) if there are cars waiting they will eventually have green light.</comment>
 			<option key="--diagnostic" value="0"/>
-			<result outcome="failure" type="quality" timestamp="2024-03-26 18:02:17 +0000">
+			<result outcome="failure" type="quality" timestamp="2024-04-07 19:03:54 +0100">
 				<option key="--diagnostic" value="0"/>
 			</result>
 		</query>
 		<query>
 			<formula>E&lt;&gt; LigthsMajorRoad.red and LigthsMinorRoad.green</formula>
 			<comment>(6) it is possible that the major-road lights are red and the minor-road lights are green at the same time.</comment>
-			<result outcome="success" type="quality" timestamp="2024-03-26 18:02:19 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:55 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>A[] LigthsMinorRoad.interim imply xMinor &gt; 30</formula>
 			<comment>(7) the minor-road interim lights always appear after at least 30 seconds of green ligth.</comment>
 			<option key="--diagnostic" value="0"/>
-			<result outcome="success" type="quality" timestamp="2024-03-26 18:02:12 +0000">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:55 +0100">
 				<option key="--diagnostic" value="0"/>
 			</result>
 		</query>

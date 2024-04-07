@@ -242,19 +242,19 @@ int MajorIsGreen := 1;</declaration>
 		<query>
 			<formula>E&lt;&gt; LigthsMinorRoad.green</formula>
 			<comment>(1) the minor-road light can go green.</comment>
-			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:08 +0100">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:12:39 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>E&lt;&gt; LigthsMajorRoad.red</formula>
 			<comment>(2) the major-road light can go red.</comment>
-			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:10 +0100">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:26 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment>(3) the system never enters in a deadlock state.</comment>
-			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:11 +0100">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:27 +0100">
 			</result>
 		</query>
 		<query>
@@ -262,38 +262,36 @@ int MajorIsGreen := 1;</declaration>
 
 </formula>
 			<comment>(4) the minor-road and major-road lights cannot be green at the same time.</comment>
-			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:12 +0100">
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:29 +0100">
 			</result>
 		</query>
 		<query>
 			<formula>(SensorMajor.low or SensorMajor.high) and LigthsMajorRoad.red --&gt; LigthsMajorRoad.green   </formula>
-			<comment>(5) if there are cars waiting they will eventually have green light.</comment>
+			<comment>(5.1) if there are cars waiting in the Major Road, they will eventually have green light.</comment>
 			<option key="--diagnostic" value="0"/>
-			<result outcome="failure" type="quality" timestamp="2024-04-06 18:46:14 +0100">
+			<result outcome="failure" type="quality" timestamp="2024-04-07 19:03:32 +0100">
 				<option key="--diagnostic" value="0"/>
 			</result>
 		</query>
 		<query>
 			<formula>(SensorMinor.low or SensorMinor.high) and LigthsMinorRoad.red --&gt; LigthsMinorRoad.green</formula>
-			<comment/>
+			<comment>(5.2) if there are cars waiting in the Minor Road, they will eventually have green light.</comment>
 			<option key="--diagnostic" value="0"/>
 			<result outcome="failure" type="quality" timestamp="2024-04-06 18:46:16 +0100">
 				<option key="--diagnostic" value="0"/>
 			</result>
 		</query>
 		<query>
-			<formula>E&lt;&gt; LigthsMajorRoad.red and LigthsMinorRoad.green</formula>
-			<comment>é possível o semáforo da Major Road estar vermelho ao mesmo tempo que o semáforo da Minor Road está verde;</comment>
-			<result outcome="success" type="quality" timestamp="2024-04-06 18:46:17 +0100">
+			<formula>A&lt;&gt; (transitoMinor &gt; transitoMajor) imply (LigthsMinorRoad.green and LigthsMajorRoad.red)</formula>
+			<comment>(8) Se houver mais transito na Minor Road, então o seu semaforo é o único que está verde</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:33 +0100">
 			</result>
 		</query>
 		<query>
-			<formula/>
-			<comment/>
-		</query>
-		<query>
-			<formula/>
-			<comment/>
+			<formula>A&lt;&gt; (transitoMinor &lt;= transitoMajor) imply (LigthsMinorRoad.red and LigthsMajorRoad.green)</formula>
+			<comment>(9) Se houver mais transito na Major Road, então o seu semaforo é o único que está verde</comment>
+			<result outcome="success" type="quality" timestamp="2024-04-07 19:03:34 +0100">
+			</result>
 		</query>
 	</queries>
 </nta>
