@@ -88,34 +88,29 @@ allValidPlays s = manyChoice [ moveOne s, moveTwo s ]
 
 moveOne :: State -> ListDur State
 moveOne s = LD (map f canCross) 
-               where
-                  -- filtar os aventureiros que podem atravessar a ponte, ou seja estão no mesmo lado que a lanterna (têm o mesmo estado)
-                  -- canCross :: [Objects]
-                  canCross = filter ((== s lamp) . s) adventurers
-                  -- f :: State -> Duration State
-                  f x = wait (getTimeOAdv x) (return $ changeState x $ moveLamp s)
+  where
+    -- filtar os aventureiros que podem atravessar a ponte, ou seja estão no mesmo lado que a lanterna (têm o mesmo estado)
+    -- canCross :: [Objects]
+    canCross = filter ((== s lamp) . s) adventurers
+    -- f :: State -> Duration State
+    f x = wait (getTimeOAdv x) (return (changeState x (moveLamp s)))
 
 
 moveTwo :: State -> ListDur State
 moveTwo s = LD (map f po)
-               where 
-                  -- pares dos aventureiros que podem atravessar a ponte
-                  -- po :: [(Objects, Objects)]
-                  po = makePairs $ filter ((== s lamp) . s) adventurers
-                  -- durações dos pares após atravessarem
-                  -- f :: (Objects, Objects) -> State
-                  f (x, y) = wait (m x y) (c x y)
-                  -- estado após dois aventureiros e lanterna atravessarem
-                  -- c :: Objects -> Objects -> m State
-                  c x y = return $ changeState x $ changeState y $ moveLamp s
-                  -- tempo que demoram os dois aventueiros a atravessar
-                  -- m :: Objects -> Objects -> Int
-                  m x y = max (getTimeOAdv x) (getTimeOAdv y)
+  where
+    -- pares dos aventureiros que podem atravessar a ponte
+    -- po :: [(Objects, Objects)]
+    po = makePairs (filter ((== s lamp) . s) adventurers)
+
+    -- durações dos pares após atravessarem
+    -- f :: (Objects, Objects) -> State
+    f (x, y) = wait (max (getTimeOAdv x) (getTimeOAdv y)) (return (changeState y (changeState x (moveLamp s))))
 
 {-- For a given number n and initial state, the function calculates
 all possible n-sequences of moves that the adventures can make --}
 -- To implement 
-exec :: Int -> State -> ListDur State
+exec :: Int -> State -> ListDur State --  ListDur State = [Duration State]
 exec 0 s = return s
 exec n s = do s' <- allValidPlays s
               exec (n-1) s'
@@ -124,13 +119,16 @@ exec n s = do s' <- allValidPlays s
 in <=17 min and not exceeding 5 moves ? --}
 -- To implement
 leq17 :: Bool
-leq17 = any (\(Duration (x, s)) -> x<=17 && all s adventurers) (remLD (exec 5 gInit))
+leq17 = any f (remLD (exec 5 gInit))
+          where
+            f (Duration (x, s)) = x<=17 && all s adventurers
+
 
 {-- Is it possible for all adventurers to be on the other side
 in < 17 min ? --}
 -- To implement
 l17 :: Bool
-l17 = any id [any f (remLD (exec i gInit)) | i <- [1..8]]
+l17 = any (== True) [any f (remLD (exec i gInit)) | i <- [1..8]] -- "[any f (remLD (exec i gInit)) | i <- [1..8]]" é uma lista de booleanos [Bool]
        where
           -- duração menor que 17 e todos atravessaram
           -- f :: Duration State -> Bool
@@ -143,7 +141,7 @@ l17 = any id [any f (remLD (exec i gInit)) | i <- [1..8]]
 {-- Implementation of the monad used for the problem of the adventurers.
 Recall the Knight's quest --}
 
-data ListDur a = LD [Duration a] deriving Show
+data ListDur a = LD [Duration a] deriving Show -- Duration a = Duration (Int, a)
 
 remLD :: ListDur a -> [Duration a]
 remLD (LD x) = x
@@ -184,8 +182,104 @@ removeSw ((a,b):xs) = if elem (b,a) xs then removeSw xs else (a,b):(removeSw xs)
 
 {--#############################################################################################################################--}
 
+---------------------------------- TESTES - OUTPUT NO FICHEIRO ----------------------------------
 
---------- Testes ----------
+-- Função para verificar se um estado é final (todos os aventureiros estão à direita)
+isFinalState :: State -> Bool
+isFinalState s = all (s . Left) [P1, P2, P5, P10] && s (Right ())
+
+-- Função para contar e imprimir estados finais válidos com tempo <= 17
+countFinalStates :: Int -> ListDur State -> IO (Int, Int)
+countFinalStates maxTime (LD durations) = do
+  let validStates = filter isValid durations
+  let totalStates = length durations
+  let validCount = length validStates
+  return (validCount, totalStates)
+  where
+    isValid (Duration (time, state)) = isFinalState state && time <= maxTime
+
+-- Função para imprimir estados finais válidos com exatamente 17 minutos
+printValidStates_17 :: Handle -> ListDur State -> IO ()
+printValidStates_17 handle (LD durations) = mapM_ (printIfValid handle) durations
+  where
+    printIfValid h (Duration (time, state))
+      | isFinalState state && time <= 17 = do
+          hPutStrLn h ( "Time: " ++ show time)
+          hPrint h state
+      | otherwise = return ()
+      
+      
+-- Função para imprimir todos os estados finais válidos
+printValidStates_All :: Handle -> ListDur State -> IO ()
+printValidStates_All handle (LD durations) = mapM_ (printIfValid handle) durations
+  where
+    printIfValid h (Duration (time, state))
+      | isFinalState state = do
+          hPutStrLn h ( "Time: " ++ show time)
+          hPrint h state
+      | otherwise = return ()
+      
+      
+-- Função para executar e contar soluções válidas
+execAndCount :: Int -> Int -> State -> IO (Int, Int)
+execAndCount steps maxTime s = do
+  let solutions = exec steps s
+  countFinalStates maxTime solutions
+
+-- Teste para leq17
+testLeq17 :: Handle -> IO ()
+testLeq17 handle = do
+  hPutStrLn handle ("Is it possible for all adventurers to be on the other side in <=17 min and not exceeding 5 moves? " ++ show leq17)
+  (validCount, totalCount) <- execAndCount 5 17 gInit
+  if validCount > 0 then do
+    hPutStrLn handle ("Valid solution(s) for leq17 found: " ++ show validCount ++ " out of " ++ show totalCount)
+  else
+    hPutStrLn handle "No valid solution(s) for leq17 found within the step limit."
+
+-- Teste para l17
+testL17 :: Handle -> IO ()
+testL17 handle = do
+  hPutStrLn handle ("Is it possible for all adventurers to be on the other side in < 17 min? " ++ show l17)
+  (validCount, totalCount) <- execAndCount 5 16 gInit
+  if validCount > 0 then do
+    hPutStrLn handle ("Valid solution(s) for l17 found: " ++ show validCount ++ " out of " ++ show totalCount)
+  else
+    hPutStrLn handle "No valid solution(s) for l17 found within the step limit."
+    
+
+testPrintFinalStates_All :: Handle -> IO ()
+testPrintFinalStates_All handle = do
+  let solutions = exec 5 gInit
+  hPutStrLn handle "All final solutions within 5 steps:"
+  printValidStates_All handle solutions
+
+
+testPrintFinalStates_17 :: Handle -> IO ()
+testPrintFinalStates_17 handle = do
+  let solutions = exec 5 gInit
+  hPutStrLn handle "Final solutions within 5 steps and exactly 17 minutes:"
+  printValidStates_17 handle solutions
+    
+
+-- Função principal
+main :: IO ()
+main = withFile "output.txt" WriteMode $ \handle -> do
+  hPutStrLn handle "\nTesting leq17:"
+  testLeq17 handle
+  hPutStrLn handle "\nTesting l17:"
+  testL17 handle
+  hPutStrLn handle "\n"
+  testPrintFinalStates_All handle
+  hPutStrLn handle "\n"
+  testPrintFinalStates_17 handle
+
+
+{--#############################################################################################################################--}
+
+{--
+
+---------------------------------- TESTES - OUTPUT NO TERMINAL ----------------------------------
+
 printSolution :: ListDur State -> IO ()
 printSolution (LD durations) = mapM_ printDuration durations
   where
@@ -247,55 +341,9 @@ main = do
   testL17
   putStrLn "\nPrinting final solution(s):"
   testPrintFinalStates
+  --}
 
 
 {--#############################################################################################################################--}
 
-{-- 
 
-RESOLUÇÃO ALTERNATIVA
-
--- Gera as possibilidades de um aventureiro atravessar a ponte
-moveOne :: State -> ListDur State
-moveOne s = LD (map f lo)
-  where
-    lo = filter ((== s lamp) . s) advo
-    f x = wait (getTimeOAdv x) (return (changeState x (moveLamp s)))
-
--- Gera as possibilidades em que dois aventureiros atravessam a ponte
-moveTwo :: State -> ListDur State
-moveTwo s = LD (map f po)
-  where
-    po = makePairs $ filter ((== s lamp) . s) advo
-    f (x, y) = wait (max (getTimeOAdv x) (getTimeOAdv y)) (return (changeState y (changeState x (moveLamp s))))
-
-{-- For a given state of the game, the function presents all the
-possible moves that the adventurers can make.  --}
--- To implement
-allValidPlays :: State -> ListDur State
-allValidPlays s = manyChoice [moveOne s, moveTwo s]
-
-
-{-- For a given number n and initial state, the function calculates
-all possible n-sequences of moves that the adventures can make --}
--- To implement 
-exec :: Int -> State -> ListDur State
-exec 0 s = return s
-exec n s = do
-  s1 <- allValidPlays s
-  exec (n-1) s1
-
-{-- Is it possible for all adventurers to be on the other side
-in <=17 min and not exceeding 5 moves ? --}
--- To implement
-leq17 :: Bool
-leq17 = any (\(Duration (x, s)) -> x <= 17 && all (s . Left) [P1, P2, P5, P10]) (remLD (exec 5 gInit))
-
-
-{-- Is it possible for all adventurers to be on the other side
-in < 17 min ? --}
--- To implement
-l17 :: Bool
-l17 = any id [any (\(Duration (x, s)) -> x < 17 && all (s . Left) [P1, P2, P5, P10]) (remLD (exec i gInit)) | i <- [1..6]]
-
---}
