@@ -1,8 +1,9 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances #-}  -- permite que se declare State sem entrar em conflito com outras definições de State do Haskell
 module Adventurers where
 
 import DurationMonad
 import Control.Monad (when) -- usado nos testes
+import System.IO            -- usado para imprimir o resultado dos testes num ficheiro à parte
 
 -- The list of adventurers
 data Adventurer = P1 | P2 | P5 | P10 deriving (Show,Eq)
@@ -121,18 +122,18 @@ in <=17 min and not exceeding 5 moves ? --}
 leq17 :: Bool
 leq17 = any f (remLD (exec 5 gInit))
           where
-            f (Duration (x, s)) = x<=17 && all s adventurers
+            f (Duration (x, s)) = x<=17 && all s adventurers && s lamp
 
 
 {-- Is it possible for all adventurers to be on the other side
 in < 17 min ? --}
 -- To implement
 l17 :: Bool
-l17 = any (== True) [any f (remLD (exec i gInit)) | i <- [1..8]] -- "[any f (remLD (exec i gInit)) | i <- [1..8]]" é uma lista de booleanos [Bool]
-       where
-          -- duração menor que 17 e todos atravessaram
-          -- f :: Duration State -> Bool
-          f (Duration (x, s)) = x<17 && all s adventurers
+l17 = any f (remLD (exec 5 gInit)) || any f (remLD (exec 8 gInit)) || any f (remLD (exec 10 gInit))
+      where
+        -- duração menor que 17 e todos atravessaram
+        -- f :: Duration State -> Bool
+        f (Duration (x, s)) = x < 17 && all s adventurers && s lamp
 
 
 {--#############################################################################################################################--}
@@ -184,9 +185,9 @@ removeSw ((a,b):xs) = if elem (b,a) xs then removeSw xs else (a,b):(removeSw xs)
 
 ---------------------------------- TESTES - OUTPUT NO FICHEIRO ----------------------------------
 
--- Função para verificar se um estado é final (todos os aventureiros estão à direita)
+-- Função para verificar se um estado é final (todos os aventureiros estão à direita, ou seja, o seu valor de State é True)
 isFinalState :: State -> Bool
-isFinalState s = all (s . Left) [P1, P2, P5, P10] && s (Right ())
+isFinalState s = all s adventurers && s lamp
 
 -- Função para contar e imprimir estados finais válidos com tempo <= 17
 countFinalStates :: Int -> ListDur State -> IO (Int, Int)
