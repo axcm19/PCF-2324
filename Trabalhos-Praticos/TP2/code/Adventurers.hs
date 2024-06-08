@@ -250,15 +250,16 @@ testL17 handle = do
 
 testPrintFinalStates_All :: Handle -> IO ()
 testPrintFinalStates_All handle = do
-  let solutions = exec 5 gInit
-  hPutStrLn handle "All final solutions within 5 steps:"
-  printValidStates_All handle solutions
+  let (LD solutions) = exec 5 gInit
+  let size = length solutions
+  hPutStrLn handle ("Total found (valid or not valid) = " ++ show size ++ "\nAll valid final solutions within 5 steps:")
+  printValidStates_All handle (LD solutions)
 
 
 testPrintFinalStates_17 :: Handle -> IO ()
 testPrintFinalStates_17 handle = do
   let solutions = exec 5 gInit
-  hPutStrLn handle "Final solutions within 5 steps and exactly 17 minutes:"
+  hPutStrLn handle "Valid final solutions within 5 steps and exactly 17 minutes:"
   printValidStates_17 handle solutions
     
 
